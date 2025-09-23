@@ -39,7 +39,7 @@ func ping(ctx context.Context, pool *sql.DB) error {
 	defer cancel()
 
 	if err := pool.PingContext(ctx); err != nil {
-		return fmt.Errorf("não foi possível efetuar uma conexão com o db: %v", err)
+		return fmt.Errorf("não foi possível efetuar uma conexão com o db - %v", err)
 	}
 	return nil
 }
