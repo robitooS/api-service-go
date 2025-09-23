@@ -43,12 +43,13 @@ func Load() (*Config, error){
 
 	dbPath := os.Getenv("DB_PATH")
 	if dbPath == "" {
-		dbPath = "data/app.db"
+		dbPath = "internal/data/app.db"
 	}
 
 	hmacSecret := os.Getenv("HMAC_SECRET")
 	if hmacSecret == "" {
-		return nil, fmt.Errorf("key hmac_secret não pode estar vazia")
+		hmacSecret = "TESTE123"
+		// return nil, fmt.Errorf("key hmac_secret não pode estar vazia")
 	}
 
 	configs.AppEnv = appEnv
