@@ -13,7 +13,7 @@ import (
 func Connect(cfg *config.Config) (*sql.DB, error) {
 	var err error
 
-	pool, err := sql.Open("sqlite3", cfg.DBPath)
+	pool, err := sql.Open("sqlite", cfg.DBPath)
 	if err != nil {
 		// Aqui não é um erro de conexão, pode ser erro sobre o dsn ou outros 
 		return nil, fmt.Errorf("não foi possível utilizar o dsn: %v", err)
