@@ -1,12 +1,16 @@
 package user
 
 import (
+	"time"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	Name      string
-	Email     string
+	ID    int64
+	Name  string
+	Email string
+	CreatedAt time.Time
 }
 
 func NewUser(name, email, password string) (*User, *Credentials, error) {
@@ -26,4 +30,4 @@ func NewUser(name, email, password string) (*User, *Credentials, error) {
 	}
 
 	return &User{Name: name, Email: email}, &Credentials{PasswordHash: string(hash)}, nil
-}	
+}
