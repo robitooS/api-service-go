@@ -39,6 +39,7 @@ func ValidateName(name string) error {
 func ValidatePassword(password string) error {
 	// minimo de 1 letra maiscula, minuscula e 1 numero (minimo de 8 caracteres)
 	// contem somente letras e numeros
+	// bem xoxo esse regex aqui, da p fazer um melhor depois 
 	var regex = regexp.MustCompile(`^(?:.*[a-z])(?:.*[A-Z])(?:.*\d)[a-zA-Z\d]{8,}$`)
 	if !regex.MatchString(password) {
 		return fmt.Errorf("senha inválida - a senha está fraca")
