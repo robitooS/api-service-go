@@ -1,7 +1,9 @@
 package user
 
+import "context"
+
 type UserRepository interface {
-	Create(user *User, credentials *Credentials) (*User, error)
-	FindByID(id int) (*User, error)
-	FindByEmail(email string) (*User, *Credentials, error)
+	Create(ctx context.Context, user *User, credentials *Credentials) (*User, error)
+	FindByID(ctx context.Context, id int) (*User, error)
+	FindByEmail(ctx context.Context, email string) (*User, *Credentials, error)
 }
