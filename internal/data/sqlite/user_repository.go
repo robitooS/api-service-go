@@ -30,7 +30,7 @@ func (rep *SQLiteUserRepository) Create(ctx context.Context, u *user.User, crede
 			return nil, ErrDuplicateEmail
 		}
 
-		return nil, err
+		return nil, fmt.Errorf("não foi possível inserir o usuário no banco - %w", err)
 	}
 
 	id, err := res.LastInsertId()
@@ -64,7 +64,7 @@ func (rep *SQLiteUserRepository) FindByEmail(ctx context.Context, em string) (*u
 		return nil, nil, ErrUsrNotFound
 	}
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("não foi possível buscar o usuário - %w", err)
 	}
 
 	// Retornar o usuário e credenciais
