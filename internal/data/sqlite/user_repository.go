@@ -36,17 +36,19 @@ func (rep *SQLiteUserRepository) Create(ctx context.Context, u *user.User, crede
 
 	id, err := res.LastInsertId()
 	if err != nil {
+		return nil, fmt.Errorf("não foi possivel obter o ID do último usuário inserido - %w", err)
+	}
+
+	// Busca o user criado antes para retorná-lo na função
+	u, err = rep.FindByID(ctx, id)
+	if errors.Is(err, ErrUsrNotFound) {
+		return nil, ErrUsrNotFound
+	}
+	if err != nil {
 		return nil, err
 	}
 
-	created := user.User{
-		ID:        int64(id),
-		Name:      u.Name,
-		Email:     u.Email,
-		CreatedAt: u.CreatedAt,
-	}
-
-	return &created, nil
+	return u, nil
 }
 
 // FindByEmail implements user.UserRepository.
