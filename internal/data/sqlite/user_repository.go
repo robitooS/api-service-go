@@ -83,8 +83,31 @@ func (rep *SQLiteUserRepository) FindByEmail(ctx context.Context, em string) (*u
 }
 
 // FindByID implements user.UserRepository.
-func (rep *SQLiteUserRepository) FindByID(ctx context.Context, id int) (*user.User, error) {
-	panic("unimplemented")
+func (rep *SQLiteUserRepository) FindByID(ctx context.Context, id int64) (*user.User, error) {
+	query := "SELECT user_id, user_name, user_email, user_created_at FROM users WHERE user_id = ?" 
+	var (
+		userID        int64
+		userName      string
+		userEmail     string
+		userCreatedAt time.Time
+	)
+
+	err := rep.DB.QueryRowContext(ctx, query, id).Scan(&userID, &userName, &userEmail, &userCreatedAt)
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, ErrUsrNotFound
+	}
+	if err != nil {
+		return nil, fmt.Errorf("não foi possível buscar o usuário - %w", err)
+	}
+
+	u := user.User {
+		ID: userID,
+		Name: userName,
+		Email: userEmail,
+		CreatedAt: userCreatedAt,
+	}
+	return &u, nil
+
 }
 
 func NewUserRepository(db *sql.DB) user.UserRepository {
