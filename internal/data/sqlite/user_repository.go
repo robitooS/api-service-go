@@ -60,7 +60,7 @@ func (rep *SQLiteUserRepository) FindByEmail(ctx context.Context, em string) (*u
 		userCreatedAt time.Time
 	)
 
-	err := rep.DB.QueryRowContext(ctx, query, em).Scan(&id, &name, &email, &passHash, &createdAt)
+	err := rep.DB.QueryRowContext(ctx, query, em).Scan(&userID, &userName, &userEmail, &userPassHash, &userCreatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil, ErrUsrNotFound
 	}
@@ -70,13 +70,13 @@ func (rep *SQLiteUserRepository) FindByEmail(ctx context.Context, em string) (*u
 
 	// Retornar o usuário e credenciais
 	u := user.User{
-		ID:        id,
-		Name:      name,
-		Email:     email,
-		CreatedAt: createdAt,
+		ID:        userID,
+		Name:      userName,
+		Email:     userEmail,
+		CreatedAt: userCreatedAt,
 	}
 	password := user.Credentials{
-		PasswordHash: passHash,
+		PasswordHash: userPassHash,
 	}
 	
 	return &u, &password, nil
