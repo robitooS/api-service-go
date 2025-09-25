@@ -50,7 +50,7 @@ func (rep *SQLiteUserRepository) Create(ctx context.Context, u *user.User, crede
 
 // FindByEmail implements user.UserRepository.
 func (rep *SQLiteUserRepository) FindByEmail(ctx context.Context, em string) (*user.User, *user.Credentials, error) {
-	query := "SELECT user_id, user_name, user_email, user_password, created_at FROM users WHERE user_email = ?"
+	query := "SELECT user_id, user_name, user_email, user_password, user_created_at FROM users WHERE user_email = ?"
 	var (
 		id        int64
 		name      string
