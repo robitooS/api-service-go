@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"time"
 )
 
 func RunMigrations(db *sql.DB) error {
@@ -56,7 +57,7 @@ func applyPendingMigrations(db *sql.DB) error {
 			return fmt.Errorf("não foi possível aplicar a migration %s no banco - %v", name, err)
 		}
 
-		_, err = db.Exec("INSERT INTO schema_migrations (version) VALUES (?)", name)
+		_, err = db.Exec("INSERT INTO schema_migrations (version, applied_at) VALUES (?)", name, time.Now())
 		if err != nil {
 			return fmt.Errorf("não foi possível inserir o novo registro na tabela de migrations - %v", err)
 		}
