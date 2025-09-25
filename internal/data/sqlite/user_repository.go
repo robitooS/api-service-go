@@ -52,11 +52,11 @@ func (rep *SQLiteUserRepository) Create(ctx context.Context, u *user.User, crede
 func (rep *SQLiteUserRepository) FindByEmail(ctx context.Context, em string) (*user.User, *user.Credentials, error) {
 	query := "SELECT user_id, user_name, user_email, user_password, user_created_at FROM users WHERE user_email = ?"
 	var (
-		id        int64
-		name      string
-		email     string
-		passHash  string
-		createdAt time.Time
+		userID        int64
+		userName      string
+		userEmail     string
+		userPassHash  string
+		userCreatedAt time.Time
 	)
 
 	err := rep.DB.QueryRowContext(ctx, query, em).Scan(&id, &name, &email, &passHash, &createdAt)
