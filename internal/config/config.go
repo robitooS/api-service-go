@@ -26,7 +26,7 @@ func Load() (*Config, error){
 			// ******************************************
 
 		} else {
-			// Erro de permissão, corrompido, blabla ...
+			// Erro de permissão, corrompido, etc etc ...
 			return nil, fmt.Errorf("não foi possível carregar o .env: %v", err)
 		}
 	}
@@ -48,8 +48,7 @@ func Load() (*Config, error){
 
 	hmacSecret := os.Getenv("HMAC_SECRET")
 	if hmacSecret == "" {
-		hmacSecret = "TESTE123"
-		// return nil, fmt.Errorf("key hmac_secret não pode estar vazia")
+		return nil, fmt.Errorf("key hmac_secret não pode estar vazia")
 	}
 
 	configs.AppEnv = appEnv
