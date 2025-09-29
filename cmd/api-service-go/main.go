@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/robitooS/api-service-go/internal/config"
-	"github.com/robitooS/api-service-go/internal/db"
+	"github.com/robitooS/api-service-go/internal/database"
 )
 
 func main() {
