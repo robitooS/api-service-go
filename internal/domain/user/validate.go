@@ -36,13 +36,38 @@ func ValidateName(name string) error {
 	return nil
 }
 
+
+// teve q trocar o regex q tava tudo errado, go nao tem lookahead
+// a verificação é feita manual agora
 func ValidatePassword(password string) error {
-	// minimo de 1 letra maiscula, minuscula e 1 numero (minimo de 8 caracteres)
-	// contem somente letras e numeros
-	// bem xoxo esse regex aqui, da p fazer um melhor depois 
-	var regex = regexp.MustCompile(`^(?:.*[a-z])(?:.*[A-Z])(?:.*\d)[a-zA-Z\d]{8,}$`)
-	if !regex.MatchString(password) {
-		return fmt.Errorf("senha inválida - a senha está fraca")
+	// senha precisa ter no mínimo 8 caracteres
+	if len(password) < 8 {
+		return fmt.Errorf("senha inválida - mínimo de 8 caracteres")
+	}
+
+	hasLower := false
+	hasUpper := false
+	hasDigit := false
+	hasSpecial := false
+
+	for _, c := range password {
+		switch {
+		case c >= 'a' && c <= 'z':
+			hasLower = true
+		case c >= 'A' && c <= 'Z':
+			hasUpper = true
+		case c >= '0' && c <= '9':
+			hasDigit = true
+		case strings.ContainsRune("!@#$%^&*()-_=+[]{}|;:,.<>?/`~", c):
+			hasSpecial = true
+		default:
+			// qualquer outro caractere não permitido
+			return fmt.Errorf("senha inválida - contém caractere não permitido")
+		}
+	}
+
+	if !hasLower || !hasUpper || !hasDigit || !hasSpecial {
+		return fmt.Errorf("senha inválida - precisa ter maiúscula, minúscula, número e símbolo especial")
 	}
 	return nil
 }
