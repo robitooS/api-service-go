@@ -18,6 +18,15 @@ type CreateUserRequest struct {
 	Password string `json:"user_password"`
 }
 
+type LoginRequest struct {
+	Email string `json:"user_email"`
+	Password string `json:"user_password"`
+}
+
+type GetUserByIdRequest struct {
+	ID int64 `json:"user_id"`
+}
+
 func NewUserHandler(userService *service.UserService) *UserHandler {
 	return &UserHandler{UserService: userService}
 }
@@ -36,4 +45,35 @@ func (uh *UserHandler) CreateUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, user)
+}
+
+func (uh *UserHandler) Login(ctx *gin.Context)  {
+	request := LoginRequest{}
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error":fmt.Sprintf("body da requisição inválido: %s", err)})
+		return
+	}
+
+	authResponse, err := uh.UserService.Login(ctx.Request.Context(), request.Email, request.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, authResponse)
+}
+
+func (uh *UserHandler) GetUserByID (ctx *gin.Context)  {
+	request := GetUserByIdRequest{}
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error":fmt.Sprintf("body da requisição inválido: %s", err)})
+		return
+	}
+
+	user, err := uh.UserService.GetByID(ctx.Request.Context(), request.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, user)
 }
