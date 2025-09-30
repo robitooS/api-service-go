@@ -3,7 +3,7 @@ package user
 import (
 	"fmt"
 	"net/mail"
-	"regexp"
+	"strings"
 )
 
 func ValidateEmail(email string) error {
