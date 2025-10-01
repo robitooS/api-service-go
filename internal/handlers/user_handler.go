@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -34,13 +34,15 @@ func NewUserHandler(userService *service.UserService) *UserHandler {
 func (uh *UserHandler) CreateUser(ctx *gin.Context) {
 	request := CreateUserRequest{}
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error":fmt.Sprintf("body da requisição inválido: %s", err)})
+		log.Printf("Body da requisição inválido: %v", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error":"body da requisição inválido"})
 		return
 	}
 
-	user, err := uh.UserService.Create(ctx.Request.Context(), request.Name, request.Email, request.Password)
+	user, err := uh.UserService.Create(ctx, request.Name, request.Email, request.Password)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error":fmt.Sprintf("falha ao persistir usuário no banco: %s", err)})
+		log.Printf("Erro ao criar usuário no banco: %v", err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error":"não foi possivel criar o usuário"})
 		return
 	}
 
@@ -50,11 +52,12 @@ func (uh *UserHandler) CreateUser(ctx *gin.Context) {
 func (uh *UserHandler) Login(ctx *gin.Context)  {
 	request := LoginRequest{}
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error":fmt.Sprintf("body da requisição inválido: %s", err)})
+		log.Printf("Body da requisição inválido: %v", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error":"body da requisição inválido"})
 		return
 	}
 
-	authResponse, err := uh.UserService.Login(ctx.Request.Context(), request.Email, request.Password)
+	authResponse, err := uh.UserService.Login(ctx, request.Email, request.Password)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -66,11 +69,12 @@ func (uh *UserHandler) Login(ctx *gin.Context)  {
 func (uh *UserHandler) GetUserByID (ctx *gin.Context)  {
 	request := GetUserByIdRequest{}
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error":fmt.Sprintf("body da requisição inválido: %s", err)})
+		log.Printf("Body da requisição inválido: %v", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error":"body da requisição inválido"})
 		return
 	}
 
-	user, err := uh.UserService.GetByID(ctx.Request.Context(), request.ID)
+	user, err := uh.UserService.GetByID(ctx, request.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
