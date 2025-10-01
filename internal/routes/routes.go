@@ -8,7 +8,7 @@ import (
 	"github.com/robitooS/api-service-go/internal/config"
 )
 
-func SetupRoutes(r *gin.Engine, pool *sql.DB, cfg *config.Config, cache *cache.NonceStore) {
+func SetupRoutes(r *gin.Engine, pool *sql.DB, cfg *config.Config, cache cache.NonceStore) {
 	// Router para users
 	UserRoutes(r, pool, cfg, cache)
 }

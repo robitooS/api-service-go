@@ -12,7 +12,7 @@ import (
 	"github.com/robitooS/api-service-go/internal/service"
 )
 
-func UserRoutes(router *gin.Engine, pool *sql.DB, cfg *config.Config, cache *cache.NonceStore) {
+func UserRoutes(router *gin.Engine, pool *sql.DB, cfg *config.Config, cache cache.NonceStore) {
 	// primeiro deve injetar as dependências 
 	userRepository := repository.NewUserRepository(pool)
 	userService := service.NewUserService(userRepository, cfg.HmacSecret)
@@ -28,7 +28,7 @@ func UserRoutes(router *gin.Engine, pool *sql.DB, cfg *config.Config, cache *cac
 	}
 
 	// Rotas protegidas (HMAC)
-	authUsersRoutes := router.Group("/users", auth.AuthenticateHMAC([]byte(cfg.HmacSecret), userRepository, *cache))
+	authUsersRoutes := router.Group("/users", auth.AuthenticateHMAC([]byte(cfg.HmacSecret), userRepository, cache))
 	{
 		authUsersRoutes.POST("/get", userHandler.GetUserByID)
 	}

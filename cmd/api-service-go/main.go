@@ -30,7 +30,7 @@ func main() {
 
 	router := gin.Default()
 	cache := cache.NewInMemoryNonceStore()
-	routes.SetupRoutes(router, pool, cfg, &cache)
+	routes.SetupRoutes(router, pool, cfg, cache)
 
 	fmt.Printf("[INFO] Servidor configurado e escutando na porta %s\n", cfg.HttpAddr)
 	router.Run(cfg.HttpAddr)
