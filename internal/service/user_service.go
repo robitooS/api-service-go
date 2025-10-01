@@ -3,9 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
-	"time"
 
-	"github.com/robitooS/api-service-go/internal/auth"
 	"github.com/robitooS/api-service-go/internal/domain/user"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -13,6 +11,11 @@ import (
 type UserService struct {
 	UserRepository user.UserRepository
 	HmacSecret []byte
+}
+
+// Struct de resposta após login
+type AuthResponse struct {
+	UserID int64 `json:"user_id"`
 }
 
 func NewUserService(userRepository user.UserRepository, hmacSecret string) *UserService {
@@ -39,13 +42,6 @@ func (s *UserService) Create (ctx context.Context, name string, email string, pa
 	return createdUser, nil
 }
 
-// Struct de resposta após login
-type AuthResponse struct {
-	UserID int64 `json:"user_id"`
-	Timestamp int64 `json:"timestamp"`
-	Signature string `json:"signature"`
-}
-
 func (s *UserService) Login (ctx context.Context, email string, password string) (*AuthResponse, error) {
 	// Verifica primeiro se o user existe
 	user, creds, err := s.UserRepository.FindByEmail(ctx, email)
@@ -57,14 +53,8 @@ func (s *UserService) Login (ctx context.Context, email string, password string)
 		return nil, fmt.Errorf("credenciais inválidas")
 	}
 
-	timestamp := time.Now().Unix()
-	msg := auth.BuildMessage(user.ID, timestamp)
-	signature := auth.GenerateSignature(msg, s.HmacSecret)
-
 	resp := AuthResponse{
 		UserID: user.ID,
-		Timestamp: timestamp,
-		Signature: signature,
 	}
 
 	return &resp, nil
