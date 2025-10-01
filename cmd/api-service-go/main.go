@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/robitooS/api-service-go/internal/cache"
 	"github.com/robitooS/api-service-go/internal/config"
 	"github.com/robitooS/api-service-go/internal/database"
 	"github.com/robitooS/api-service-go/internal/routes"
@@ -28,7 +29,8 @@ func main() {
 	fmt.Println("Migrations executadas com sucesso.")
 
 	router := gin.Default()
-	routes.SetupRoutes(router, pool, cfg)
+	cache := cache.NewInMemoryNonceStore()
+	routes.SetupRoutes(router, pool, cfg, &cache)
 
 	fmt.Printf("[INFO] Servidor configurado e escutando na porta %s\n", cfg.HttpAddr)
 	router.Run(cfg.HttpAddr)
