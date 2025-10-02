@@ -148,13 +148,13 @@ $loginResult = Run-Test -TestName "2.1 - Deve realizar login com sucesso" -Expec
 }
 
 # 2.2 - Erro: Login com e-mail inexistente
-Run-Test -TestName "2.2 - Deve retornar erro ao tentar login com e-mail inexistente" -ExpectedStatusCode 500 -TestAction {
+Run-Test -TestName "2.2 - Deve retornar erro ao tentar login com e-mail inexistente" -ExpectedStatusCode 401 -TestAction {
     $body = @{ user_email = "naoexiste@exemplo.com"; user_password = "Password@123" } | ConvertTo-Json -Compress
     Invoke-RestMethod -Uri "$baseUrl/users/login" -Method Post -Body $body -ContentType "application/json"
 }
 
 # 2.3 - Erro: Login com senha incorreta
-Run-Test -TestName "2.3 - Deve retornar erro ao tentar login com senha incorreta" -ExpectedStatusCode 500 -TestAction {
+Run-Test -TestName "2.3 - Deve retornar erro ao tentar login com senha incorreta" -ExpectedStatusCode 401 -TestAction {
     $body = @{ user_email = $global:testUser.email; user_password = "senhaerrada" } | ConvertTo-Json -Compress
     Invoke-RestMethod -Uri "$baseUrl/users/login" -Method Post -Body $body -ContentType "application/json"
 }
