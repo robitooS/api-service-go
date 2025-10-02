@@ -53,8 +53,8 @@ func AuthenticateHMAC(hmacKey []byte, repository user.UserRepository, cache cach
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error":"nonce já utilizado"})
 			return
 		}
-	
-		msg := BuildMessage(method, path, ts, bodyBytes, nonce)
+
+		msg := BuildMessage(method, path, ts, string(bodyBytes), nonce)
 		ok, err := ValidateSignature(msg, authHeader, hmacKey)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error":"erro ao validar assinatura"})
@@ -82,5 +82,3 @@ func verifyUserExists(r user.UserRepository, ctx context.Context, userID int64) 
 	_, err := r.FindByID(ctx, userID)
 	return err == nil
 }
-
-
