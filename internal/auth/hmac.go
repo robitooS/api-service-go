@@ -51,6 +51,6 @@ func ValidateTimeStamp(ts int64) error {
 	return nil
 }
 
-func BuildMessage(method, pathUrl string, ts int64, body []byte, nonce string) string {
+func BuildMessage(method, pathUrl string, ts int64, body string, nonce string) string {
 	return fmt.Sprintf("%s:%s:%d:%s:%s", method, pathUrl, ts, body, nonce)
 }
