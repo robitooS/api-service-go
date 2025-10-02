@@ -18,10 +18,10 @@ type AuthResponse struct {
 	UserID int64 `json:"user_id"`
 }
 
-func NewUserService(userRepository user.UserRepository, hmacSecret string) *UserService {
+func NewUserService(userRepository user.UserRepository, hmacSecret []byte) *UserService {
 	return &UserService{
 		UserRepository: userRepository,
-		HmacSecret: []byte(hmacSecret),
+		HmacSecret: hmacSecret,
 	}
 }
 
