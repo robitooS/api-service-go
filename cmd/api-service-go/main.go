@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 
@@ -17,6 +18,11 @@ func main() {
 		log.Fatalf("erro ao carregar config: %v", err)
 	}
 
+	hmacKey, err := base64.StdEncoding.DecodeString(cfg.HmacSecret)
+	if err != nil {
+		log.Fatalf("HMAC_SECRET inválido") // indica que não ta codificado com base64
+	}
+
 	pool, err := db.Connect(cfg)
 	if err != nil {
 		log.Fatalf("erro ao conectar no banco: %v", err)
@@ -30,7 +36,7 @@ func main() {
 
 	router := gin.Default()
 	cache := cache.NewInMemoryNonceStore()
-	routes.SetupRoutes(router, pool, cfg, cache)
+	routes.SetupRoutes(router, pool, cache, hmacKey)
 
 	fmt.Printf("[INFO] Servidor configurado e escutando na porta %s\n", cfg.HttpAddr)
 	router.Run(cfg.HttpAddr)
