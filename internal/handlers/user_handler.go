@@ -59,7 +59,7 @@ func (uh *UserHandler) Login(ctx *gin.Context)  {
 
 	authResponse, err := uh.UserService.Login(ctx, request.Email, request.Password)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 

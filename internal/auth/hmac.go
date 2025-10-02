@@ -9,22 +9,17 @@ import (
 )
 
 // Vai gerar o novo HMAC conforme a mensagem recebida
-func GenerateSignature(msg string, key []byte) string {
+func generateSignature(msg string, key []byte) []byte {
 	// Criar código hash
 	mac := hmac.New(sha256.New, key)
 	mac.Write([]byte(msg))
 	
-	// Decodifica slice de bytes p retornar uma string legivel
-	signature := base64.RawURLEncoding.EncodeToString(mac.Sum(nil))
-	return signature
+	return mac.Sum(nil)
 }
 
 // Valida se a assinatura do hmac vindo bate com a key do servidor
 func ValidateSignature(msg, signature string, key []byte) (bool, error) {
-	expectedHMAC := hmac.New(sha256.New, key)
-	expectedHMAC.Write([]byte(msg))
-	// Chave esperada de acordo com a mensagem
-	expectedSign := expectedHMAC.Sum(nil)
+	expectedSign := generateSignature(msg, key)
 
 	// Assinatura vinda da mensagem
 	sign, err := base64.RawURLEncoding.DecodeString(signature); 

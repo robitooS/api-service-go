@@ -2,6 +2,7 @@ package cache
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"time"
 )
@@ -23,9 +24,11 @@ func (i *InMemoryNonceStore) CacheNonce(nonce string) error {
 	defer i.mu.Unlock()
 
 	if _, ok := i.Storage[nonce]; ok {
+		log.Println("[INFO-NONCE] O NONCE JÁ FOI USADO")
 		return fmt.Errorf("o nonce já foi usado")
 
 	}
+	log.Println("[INFO-NONCE] NONCE DISPONÍVEL")
 	i.Storage[nonce] = time.Now()
 	return nil
 }

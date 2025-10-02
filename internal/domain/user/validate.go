@@ -36,8 +36,7 @@ func ValidateName(name string) error {
 	return nil
 }
 
-
-// teve q trocar o regex q tava tudo errado, go nao tem lookahead
+// teve q trocar o regex q tava tudo errado, nãu funcionava o lookahead
 // a verificação é feita manual agora
 func ValidatePassword(password string) error {
 	// senha precisa ter no mínimo 8 caracteres
@@ -61,7 +60,7 @@ func ValidatePassword(password string) error {
 		case strings.ContainsRune("!@#$%^&*()-_=+[]{}|;:,.<>?/`~", c):
 			hasSpecial = true
 		default:
-			// qualquer outro caractere não permitido
+			// qualquer outro caractere não é permitido
 			return fmt.Errorf("senha inválida - contém caractere não permitido")
 		}
 	}
