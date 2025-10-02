@@ -76,7 +76,7 @@ func (uh *UserHandler) GetUserByID (ctx *gin.Context)  {
 
 	user, err := uh.UserService.GetByID(ctx, request.ID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	ctx.JSON(http.StatusOK, user)
