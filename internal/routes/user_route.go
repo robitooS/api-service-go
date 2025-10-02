@@ -6,16 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/robitooS/api-service-go/internal/auth"
 	"github.com/robitooS/api-service-go/internal/cache"
-	"github.com/robitooS/api-service-go/internal/config"
 	"github.com/robitooS/api-service-go/internal/handlers"
 	"github.com/robitooS/api-service-go/internal/repository"
 	"github.com/robitooS/api-service-go/internal/service"
 )
 
-func UserRoutes(router *gin.Engine, pool *sql.DB, cfg *config.Config, cache cache.NonceStore) {
+func UserRoutes(router *gin.Engine, pool *sql.DB, cache cache.NonceStore, hmacKey []byte) {
 	// primeiro deve injetar as dependências 
 	userRepository := repository.NewUserRepository(pool)
-	userService := service.NewUserService(userRepository, cfg.HmacSecret)
+	userService := service.NewUserService(userRepository, hmacKey)
 	userHandler := handlers.NewUserHandler(userService) // handler responsável pelo usuário
 
 	// Rotas públicas
@@ -28,7 +27,7 @@ func UserRoutes(router *gin.Engine, pool *sql.DB, cfg *config.Config, cache cach
 	}
 
 	// Rotas protegidas (HMAC)
-	authUsersRoutes := router.Group("/users", auth.AuthenticateHMAC([]byte(cfg.HmacSecret), userRepository, cache))
+	authUsersRoutes := router.Group("/users", auth.AuthenticateHMAC(hmacKey, userRepository, cache))
 	{
 		authUsersRoutes.POST("/get", userHandler.GetUserByID)
 	}
