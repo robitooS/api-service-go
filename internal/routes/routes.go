@@ -5,10 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/robitooS/api-service-go/internal/cache"
-	"github.com/robitooS/api-service-go/internal/config"
 )
 
-func SetupRoutes(r *gin.Engine, pool *sql.DB, cfg *config.Config, cache cache.NonceStore) {
+func SetupRoutes(r *gin.Engine, pool *sql.DB, cache cache.NonceStore, hmacKey []byte) {
 	// Router para users
-	UserRoutes(r, pool, cfg, cache)
+	UserRoutes(r, pool, cache, hmacKey)
 }
