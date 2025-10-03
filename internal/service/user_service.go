@@ -10,7 +10,6 @@ import (
 
 type UserService struct {
 	UserRepository user.UserRepository
-	HmacSecret []byte
 }
 
 // Struct de resposta após login
@@ -18,11 +17,8 @@ type AuthResponse struct {
 	UserID int64 `json:"user_id"`
 }
 
-func NewUserService(userRepository user.UserRepository, hmacSecret []byte) *UserService {
-	return &UserService{
-		UserRepository: userRepository,
-		HmacSecret: hmacSecret,
-	}
+func NewUserService(userRepository user.UserRepository) *UserService {
+	return &UserService{UserRepository: userRepository}
 }
 
 func (s *UserService) Create (ctx context.Context, name string, email string, password string) (*user.User, error){

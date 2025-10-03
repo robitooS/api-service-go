@@ -20,6 +20,10 @@ var (
 	ErrUsrNotFound    = errors.New("usuário não encontrado")
 )
 
+func NewUserRepository(db *sql.DB) user.UserRepository {
+	return &SQLiteUserRepository{DB: db}
+}
+
 // Create implements user.UserRepository.
 func (rep *SQLiteUserRepository) Create(ctx context.Context, u *user.User, credentials *user.Credentials) (*user.User, error) {
 	query := "INSERT INTO users (user_name, user_email, user_password) VALUES (?, ?, ?)"
@@ -112,6 +116,3 @@ func (rep *SQLiteUserRepository) FindByID(ctx context.Context, id int64) (*user.
 
 }
 
-func NewUserRepository(db *sql.DB) user.UserRepository {
-	return &SQLiteUserRepository{DB: db}
-}
