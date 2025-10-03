@@ -13,6 +13,6 @@ func AddressRoutes(router *gin.Engine, userRepository user.UserRepository, addre
 	privateGroup := router.Group("/address", auth.AuthenticateHMAC(hmacKey, userRepository, cache))
 	{
 		privateGroup.POST("/create", addressHandler.CreateAddress)
-		privateGroup.PUT("/update", addressHandler.UpdateAddress)
+		privateGroup.POST("/update", addressHandler.UpdateAddress)
 	}
 }
