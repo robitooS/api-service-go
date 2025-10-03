@@ -9,7 +9,6 @@ import (
 	"github.com/robitooS/api-service-go/internal/config"
 )
 
-//! A dsn será passado pela main
 func Connect(cfg *config.Config) (*sql.DB, error) {
 	var err error
 

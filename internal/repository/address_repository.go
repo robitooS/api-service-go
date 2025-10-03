@@ -121,7 +121,6 @@ func (r *SQLiteAddressRepository) FindByID(ctx context.Context, id int64) (*addr
 
 // Update implements address.AddressRepository.
 func (r *SQLiteAddressRepository) Update(ctx context.Context, userID int64, newAddress *address.Address) (*address.Address, error) {
-	// Verificar primeiro se o endereço existe e então alterar
 	query := `
 		UPDATE address
 		SET address_address = ?,

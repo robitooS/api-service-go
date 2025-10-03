@@ -3,10 +3,8 @@ package auth
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
 
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -31,17 +29,6 @@ func AuthenticateHMAC(hmacKey []byte, repository user.UserRepository, cache cach
 		nonce := ctx.GetHeader("X-Nonce")
 		userIDStr := ctx.GetHeader("X-User-ID")
 
-		// --- INÍCIO DO DEBUG ---
-		log.Println("------------------- DEBUG HMAC (Servidor Go) -------------------")
-		log.Printf("Recebido [Method]: %s", method)
-		log.Printf("Recebido [Path]: %s", path)
-		log.Printf("Recebido [Timestamp]: %s", tsStr)
-		log.Printf("Recebido [Nonce]: %s", nonce)
-		log.Printf("Recebido [User-ID]: %s", userIDStr)
-		log.Printf("Recebido [Body]: %s", string(bodyBytes))
-		log.Printf("Recebido [Assinatura]: %s", authHeader)
-		// --- FIM DO DEBUG ---
-
 		if tsStr == "" || nonce == "" || authHeader == "" {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "headers de autenticação ausentes"})
 			return
@@ -53,7 +40,6 @@ func AuthenticateHMAC(hmacKey []byte, repository user.UserRepository, cache cach
 			return
 		}
 
-		// ... (o resto das validações de timestamp, nonce, etc. continuam iguais)
 		if err := ValidateTimeStamp(ts); err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "timestamp inválido ou expirado"})
 			return
@@ -65,17 +51,10 @@ func AuthenticateHMAC(hmacKey []byte, repository user.UserRepository, cache cach
 		
 		msg := BuildMessage(method, path, ts, string(bodyBytes), nonce)
 		
-		// --- INÍCIO DO DEBUG ---
-		serverSignatureBytes := generateSignature(msg, hmacKey)
-		serverSignature := base64.RawURLEncoding.EncodeToString(serverSignatureBytes)
-		log.Printf(">>> Mensagem Montada (Go): '%s'", msg)
-		log.Printf(">>> Assinatura Calculada (Go): %s", serverSignature)
-		log.Println("----------------------------------------------------------------")
-		// --- FIM DO DEBUG ---
 
 		ok, err := ValidateSignature(msg, authHeader, hmacKey)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "erro ao validar assinatura"})
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "erro ao validar assinatura"})
 			return
 		}
 		if !ok {
